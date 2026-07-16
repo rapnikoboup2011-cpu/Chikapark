@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ZoneType {
+  BEACH
+  POOL
+  VIP
+}
+
+enum SpotStatus {
+  FREE
+  PENDING
+  BOOKED
+  DISABLED
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  EXPIRED
+}
+
+enum PaymentStatus {
+  CREATED
+  CONFIRMED
+  REJECTED
+  REFUNDED
+}
+
+model Zone {
+  id        String   @id @default(cuid())
+  name      String
+  type      ZoneType
+  mapImage  String?  // ссылка на фоновое изображение схемы зоны
+  spots     Spot[]
+  createdAt DateTime @default(now())
+}
+
+model Spot {
+  id         String     @id @default(cuid())
+  zone       Zone       @relation(fields: [zoneId], references: [id])
+  zoneId     String
+  number     String     // например "A12" или "VIP-3"
+  positionX  Float      // координата на схеме, % от ширины
+  positionY  Float      // координата на схеме, % от высоты
+  basePrice  Int        // цена в копейках
+  status     SpotStatus @default(FREE)
+  bookings   Booking[]
+  createdAt  DateTime   @default(now())
+}
+
+model Booking {
+  id            String        @id @default(cuid())
+  spot          Spot          @relation(fields: [spotId], references: [id])
+  spotId        String
+  date          DateTime      // дата брони
+  timeSlot      String?       // например "full_day" или "10:00-14:00"
+  status        BookingStatus @default(PENDING)
+  customerName  String
+  customerPhone String
+  customerEmail String?
+  telegramChatId String?
+  totalPrice    Int           // копейки
+  expiresAt     DateTime      // до какого момента держим PENDING без оплаты
+  payment       Payment?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model Payment {
+  id              String        @id @default(cuid())
+  booking         Booking       @relation(fields: [bookingId], references: [id])
+  bookingId       String        @unique
+  provider        String        @default("tkassa")
+  providerOrderId String?       // OrderId, который отправляли в Init
+  providerPaymentId String?     // PaymentId, который вернула Т-Касса
+  method          String?       // "card" | "sbp"
+  amount          Int           // копейки
+  status          PaymentStatus @default(CREATED)
+  rawWebhookData  Json?         // сырой payload последнего вебхука, для отладки
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model NotificationLog {
+  id        String   @id @default(cuid())
+  bookingId String
+  channel   String   // "telegram" | "email"
+  status    String   // "sent" | "failed"
+  error     String?
+  createdAt DateTime @default(now())
+}
