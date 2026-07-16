@@ -1,9 +1,12 @@
 import { prisma } from "@/lib/prisma";
+import { releaseExpiredBookings } from "@/lib/bookings";
 import { SchemeMap } from "@/components/SchemeMap";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
+  await releaseExpiredBookings();
+
   const [zones, spots] = await Promise.all([
     prisma.zone.findMany({ orderBy: { createdAt: "asc" } }),
     prisma.spot.findMany({ include: { zone: true }, orderBy: { number: "asc" } }),

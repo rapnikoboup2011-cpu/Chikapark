@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { releaseExpiredBookings } from "@/lib/bookings";
+import { BookingForm } from "@/components/BookingForm";
 
 const ZONE_LABELS: Record<string, string> = {
   BEACH: "Пляж",
@@ -18,6 +20,8 @@ export default async function BookingPage({
   params: Promise<{ spotId: string }>;
 }) {
   const { spotId } = await params;
+  await releaseExpiredBookings();
+
   const spot = await prisma.spot.findUnique({
     where: { id: spotId },
     include: { zone: true },
@@ -45,9 +49,7 @@ export default async function BookingPage({
         </p>
 
         {spot.status === "FREE" ? (
-          <p className="mt-6 rounded-lg bg-zinc-50 p-4 text-sm text-zinc-500 dark:bg-zinc-900 dark:text-zinc-400">
-            Форма бронирования появится на следующем шаге разработки.
-          </p>
+          <BookingForm spotId={spot.id} />
         ) : (
           <p className="mt-6 rounded-lg bg-rose-50 p-4 text-sm text-rose-600 dark:bg-rose-950 dark:text-rose-400">
             Это место сейчас недоступно для бронирования.
