@@ -20,6 +20,7 @@ export function SchemeMap({
   spots: SpotWithZone[];
 }) {
   const [activeZoneId, setActiveZoneId] = useState(zones[0]?.id);
+  const activeZone = zones.find((zone) => zone.id === activeZoneId);
   const activeSpots = spots.filter((spot) => spot.zoneId === activeZoneId);
 
   return (
@@ -40,7 +41,21 @@ export function SchemeMap({
         ))}
       </div>
 
-      <div className="relative h-[420px] w-full overflow-hidden rounded-2xl border border-zinc-200 bg-gradient-to-b from-sky-50 to-sky-100 dark:border-zinc-800 dark:from-zinc-900 dark:to-zinc-800">
+      <div
+        className={`relative h-[420px] w-full overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800 ${
+          activeZone?.mapImage
+            ? "bg-zinc-200 dark:bg-zinc-900"
+            : "bg-gradient-to-b from-sky-50 to-sky-100 dark:from-zinc-900 dark:to-zinc-800"
+        }`}
+      >
+        {activeZone?.mapImage && (
+          // eslint-disable-next-line @next/next/no-img-element -- arbitrary venue photos, not a known image domain
+          <img
+            src={activeZone.mapImage}
+            alt={activeZone.name}
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        )}
         {activeSpots.map((spot) => (
           <SpotMarker key={spot.id} spot={spot} />
         ))}
