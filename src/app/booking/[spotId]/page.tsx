@@ -33,25 +33,21 @@ export default async function BookingPage({
 
   return (
     <div className="mx-auto flex w-full max-w-lg flex-1 flex-col gap-6 px-6 py-10">
-      <Link href="/" className="text-sm text-zinc-500 hover:underline">
+      <Link href="/" className="text-sm text-muted hover:text-gold">
         ← Назад к схеме
       </Link>
 
-      <div className="rounded-2xl border border-zinc-200 p-6 dark:border-zinc-800">
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
-          {ZONE_LABELS[spot.zone.type] ?? spot.zone.name}
-        </p>
-        <h1 className="mt-1 text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
+      <div className="rounded-2xl border border-surface-border bg-surface p-6">
+        <p className="text-sm text-muted">{ZONE_LABELS[spot.zone.type] ?? spot.zone.name}</p>
+        <h1 className="mt-1 font-[family-name:var(--font-display)] text-2xl text-foreground">
           Место {spot.number}
         </h1>
-        <p className="mt-2 text-lg text-zinc-700 dark:text-zinc-300">
-          {formatPrice(spot.basePrice)}
-        </p>
+        <p className="mt-2 text-lg text-gold-strong">{formatPrice(spot.basePrice)}</p>
 
         {spot.status === "FREE" ? (
           <BookingForm spotId={spot.id} />
         ) : (
-          <p className="mt-6 rounded-lg bg-rose-50 p-4 text-sm text-rose-600 dark:bg-rose-950 dark:text-rose-400">
+          <p className="mt-6 rounded-lg bg-rose-950 p-4 text-sm text-rose-400">
             Это место сейчас недоступно для бронирования.
           </p>
         )}

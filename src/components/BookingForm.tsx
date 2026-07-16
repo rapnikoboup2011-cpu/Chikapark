@@ -7,6 +7,9 @@ function todayISODate() {
   return new Date().toISOString().slice(0, 10);
 }
 
+const inputClassName =
+  "rounded-lg border border-surface-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted/60 outline-none focus:border-gold focus:ring-1 focus:ring-gold";
+
 export function BookingForm({ spotId }: { spotId: string }) {
   const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
@@ -54,7 +57,7 @@ export function BookingForm({ spotId }: { spotId: string }) {
   return (
     <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
       <div className="flex flex-col gap-1">
-        <label htmlFor="date" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+        <label htmlFor="date" className="text-sm font-medium text-muted">
           Дата
         </label>
         <input
@@ -64,12 +67,12 @@ export function BookingForm({ spotId }: { spotId: string }) {
           required
           min={todayISODate()}
           defaultValue={todayISODate()}
-          className="rounded-lg border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+          className={inputClassName}
         />
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="customerName" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+        <label htmlFor="customerName" className="text-sm font-medium text-muted">
           Имя
         </label>
         <input
@@ -80,12 +83,12 @@ export function BookingForm({ spotId }: { spotId: string }) {
           minLength={2}
           maxLength={200}
           placeholder="Как к вам обращаться"
-          className="rounded-lg border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+          className={inputClassName}
         />
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="customerPhone" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+        <label htmlFor="customerPhone" className="text-sm font-medium text-muted">
           Телефон
         </label>
         <input
@@ -94,33 +97,31 @@ export function BookingForm({ spotId }: { spotId: string }) {
           type="tel"
           required
           placeholder="+7 900 000-00-00"
-          className="rounded-lg border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+          className={inputClassName}
         />
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="customerEmail" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-          Email <span className="text-zinc-400">(необязательно)</span>
+        <label htmlFor="customerEmail" className="text-sm font-medium text-muted">
+          Email <span className="text-muted/60">(необязательно)</span>
         </label>
         <input
           id="customerEmail"
           name="customerEmail"
           type="email"
           placeholder="для чека и подтверждения"
-          className="rounded-lg border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+          className={inputClassName}
         />
       </div>
 
       {error && (
-        <p className="rounded-lg bg-rose-50 p-3 text-sm text-rose-600 dark:bg-rose-950 dark:text-rose-400">
-          {error}
-        </p>
+        <p className="rounded-lg bg-rose-950 p-3 text-sm text-rose-400">{error}</p>
       )}
 
       <button
         type="submit"
         disabled={submitting}
-        className="mt-2 rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-700 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+        className="mt-2 rounded-lg bg-gold px-4 py-2.5 text-sm font-medium text-black transition-colors hover:bg-gold-strong disabled:opacity-50"
       >
         {submitting ? "Бронируем…" : "Забронировать место"}
       </button>
